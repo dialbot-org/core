@@ -1,0 +1,157 @@
+basePath: /api/v1
+definitions:
+  api_controller.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  api_controller.InitImportData:
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/autocall_pkg_csv.RowError'
+        type: array
+      failed:
+        type: integer
+      inserted:
+        type: integer
+      rowsProcessed:
+        type: integer
+      skipped:
+        type: integer
+    type: object
+  api_controller.InitImportResponse:
+    properties:
+      data:
+        $ref: '#/definitions/api_controller.InitImportData'
+    type: object
+  api_controller.LeadsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/autocall_internal_model.Lead'
+        type: array
+    type: object
+  api_controller.StatusData:
+    properties:
+      calling:
+        type: integer
+      completed:
+        type: integer
+      current_lead:
+        $ref: '#/definitions/autocall_internal_model.Lead'
+      failed:
+        type: integer
+      interested:
+        type: integer
+      pending:
+        type: integer
+      total:
+        type: integer
+    type: object
+  api_controller.StatusResponse:
+    properties:
+      data:
+        $ref: '#/definitions/api_controller.StatusData'
+    type: object
+  autocall_internal_model.Lead:
+    properties:
+      company:
+        type: string
+      createdAt:
+        type: string
+      error:
+        type: string
+      fullName:
+        type: string
+      googleSheetSynced:
+        type: boolean
+      id:
+        type: string
+      phoneNumber:
+        type: string
+      status:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  autocall_pkg_csv.RowError:
+    properties:
+      message:
+        type: string
+      row:
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: Outbound SIM800C calling API for CSV lead import, status, and interested
+    leads.
+  title: AutoCall API
+  version: "1.0"
+paths:
+  /autocall/init:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a CSV with fullname, company, and phone number columns.
+        Duplicate phone numbers are skipped.
+      parameters:
+      - description: CSV file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api_controller.InitImportResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api_controller.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api_controller.ErrorResponse'
+      summary: Import leads from CSV
+      tags:
+      - autocall
+  /autocall/leads:
+    get:
+      description: Returns leads that pressed DTMF 1 (status interested) from PostgreSQL.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api_controller.LeadsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api_controller.ErrorResponse'
+      summary: List interested leads
+      tags:
+      - autocall
+  /autocall/status:
+    get:
+      description: Returns lead counts by status and the current calling lead when
+        applicable.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api_controller.StatusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api_controller.ErrorResponse'
+      summary: Get calling status
+      tags:
+      - autocall
+swagger: "2.0"
