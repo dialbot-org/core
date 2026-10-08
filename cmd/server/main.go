@@ -5,14 +5,14 @@
 package main
 
 import (
-	router "autocall/api/router"
-	config "autocall/internal/config"
-	database "autocall/internal/database"
-	repository "autocall/internal/repository"
-	service "autocall/internal/service"
-	sim800c "autocall/pkg/caller/sim800c"
-	logger "autocall/pkg/log"
-	sheets "autocall/pkg/sheets"
+	router "core/api/router"
+	config "core/internal/config"
+	database "core/internal/database"
+	repository "core/internal/repository"
+	service "core/internal/service"
+	sim800c "core/pkg/caller/sim800c"
+	logger "core/pkg/log"
+	sheets "core/pkg/sheets"
 
 	"net/http"
 	"time"
@@ -35,18 +35,20 @@ func main() {
 
 	leads := repository.NewLeads(gormDB)
 	modem := sim800c.New(sim800c.Config{
-		Port:      cfg.Modem.Port,
-		BaudRate:  cfg.Modem.BaudRate,
-		AudioFile: cfg.Modem.AudioFile,
+		Port:          cfg.Modem.Port,
+		BaudRate:      cfg.Modem.BaudRate,
+		AudioFile:     cfg.Modem.AudioFile,
+		PlaybackDelay: cfg.Modem.PlaybackDelaySec,
 	})
 
-	caller := service.NewCaller(leads, modem)
+	caller := service.NewCaller(leads, modem, time.Duration(cfg.Modem.NoAnswerRetrySec)*time.Second)
 	caller.Start()
 
 	sheetClient := sheets.New(sheets.Config{
 		CredentialsFile: cfg.Google.CredentialsFile,
 		SpreadsheetID:   cfg.Google.SpreadsheetID,
 		SheetName:       cfg.Google.SheetName,
+		StartRow:        cfg.Google.SheetStartRow,
 	})
 	service.StartSheetsSync(leads, sheetClient)
 

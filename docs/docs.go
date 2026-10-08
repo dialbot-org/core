@@ -127,7 +127,7 @@ const docTemplate = `{
                 "errors": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/autocall_pkg_csv.RowError"
+                        "$ref": "#/definitions/core_pkg_csv.RowError"
                     }
                 },
                 "failed": {
@@ -158,7 +158,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/autocall_internal_model.Lead"
+                        "$ref": "#/definitions/core_internal_model.Lead"
                     }
                 }
             }
@@ -173,7 +173,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "current_lead": {
-                    "$ref": "#/definitions/autocall_internal_model.Lead"
+                    "$ref": "#/definitions/core_internal_model.Lead"
                 },
                 "failed": {
                     "type": "integer"
@@ -197,7 +197,7 @@ const docTemplate = `{
                 }
             }
         },
-        "autocall_internal_model.Lead": {
+        "core_internal_model.Lead": {
             "type": "object",
             "properties": {
                 "company": {
@@ -229,7 +229,7 @@ const docTemplate = `{
                 }
             }
         },
-        "autocall_pkg_csv.RowError": {
+        "core_pkg_csv.RowError": {
             "type": "object",
             "properties": {
                 "message": {

@@ -1,7 +1,9 @@
 package repository
 
 import (
-	model "autocall/internal/model"
+	"time"
+
+	model "core/internal/model"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -17,12 +19,12 @@ func NewLeads(db *gorm.DB) *LeadRepository {
 }
 
 type StatusCounts struct {
-	Total     int64
-	Pending   int64
-	Calling   int64
-	Completed int64
+	Total      int64
+	Pending    int64
+	Calling    int64
+	Completed  int64
 	Interested int64
-	Failed    int64
+	Failed     int64
 }
 
 func (r *LeadRepository) InsertIgnoreDuplicates(leads []model.Lead) (inserted int, skipped int, err error) {
@@ -48,7 +50,8 @@ func (r *LeadRepository) NextPending() (*model.Lead, error) {
 	var lead model.Lead
 	err := r.db.
 		Where("status = ?", model.LeadStatusPending).
-		Order("created_at ASC").
+		Where("updated_at <= ?", time.Now()).
+		Order("updated_at ASC").
 		First(&lead).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
@@ -61,6 +64,28 @@ func (r *LeadRepository) NextPending() (*model.Lead, error) {
 
 func (r *LeadRepository) Update(lead *model.Lead) error {
 	return r.db.Save(lead).Error
+}
+
+// RequeueNoAnswer puts the lead back in the queue after retryAfter (not picked until then).
+func (r *LeadRepository) RequeueNoAnswer(id uuid.UUID, retryAfter time.Duration) error {
+	retryAt := time.Now().Add(retryAfter)
+	return r.db.Model(&model.Lead{}).Where("id = ?", id).Updates(map[string]interface{}{
+		"status":     model.LeadStatusPending,
+		"error":      nil,
+		"updated_at": retryAt,
+	}).Error
+}
+
+// ReleaseStaleCalling moves leads left in "calling" (e.g. after a crash or hung modem call)
+// back to pending so the worker can pick them up again.
+func (r *LeadRepository) ReleaseStaleCalling() (int64, error) {
+	result := r.db.Model(&model.Lead{}).
+		Where("status = ?", model.LeadStatusCalling).
+		Updates(map[string]interface{}{
+			"status": model.LeadStatusPending,
+			"error":  nil,
+		})
+	return result.RowsAffected, result.Error
 }
 
 func (r *LeadRepository) SetStatus(id uuid.UUID, status string, errMsg *string) error {

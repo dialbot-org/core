@@ -15,15 +15,18 @@ type DatabaseConfig struct {
 }
 
 type ModemConfig struct {
-	Port      string
-	BaudRate  int
-	AudioFile string
+	Port               string
+	BaudRate           int
+	AudioFile          string
+	PlaybackDelaySec   int
+	NoAnswerRetrySec   int
 }
 
 type GoogleConfig struct {
 	CredentialsFile string
 	SpreadsheetID   string
 	SheetName       string
+	SheetStartRow   int
 }
 
 type Config struct {

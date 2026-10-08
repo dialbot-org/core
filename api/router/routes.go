@@ -1,25 +1,33 @@
 package router
 
 import (
-	controller "autocall/api/controller"
-	service "autocall/internal/service"
+	controller "core/api/controller"
+	service "core/internal/service"
 
 	"net/http"
-
-	_ "autocall/docs"
+	_ "core/docs"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"gorm.io/gorm"
 )
 
 func Config(db *gorm.DB, caller *service.Caller) http.Handler {
 	router := gin.Default()
 	controllers := controller.Create(db, caller)
 
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.Use(func(c *gin.Context) {
+		switch c.Request.URL.Path {
+		case "/swagger", "/swagger/":
+			c.Redirect(http.StatusTemporaryRedirect, "/swagger/index.html")
+			c.Abort()
+			return
+		}
+		c.Next()
+	})
 
 	router.Use(cors.New(cors.Config{
 		AllowCredentials:       true,
@@ -28,6 +36,14 @@ func Config(db *gorm.DB, caller *service.Caller) http.Handler {
 		AllowOrigins:           []string{"http://localhost:3000"},
 		AllowMethods:           []string{"GET", "POST"},
 	}))
+
+	router.GET(
+		"/swagger/*any",
+		ginSwagger.WrapHandler(
+			swaggerFiles.Handler,
+			ginSwagger.URL("/swagger/doc.json"),
+		),
+	)
 
 	v1 := router.Group("/api/v1")
 

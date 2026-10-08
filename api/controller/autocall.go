@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	model "autocall/internal/model"
-	csv "autocall/pkg/csv"
+	model "core/internal/model"
+	csv "core/pkg/csv"
 
 	"github.com/gin-gonic/gin"
 )

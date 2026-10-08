@@ -9,7 +9,7 @@ definitions:
     properties:
       errors:
         items:
-          $ref: '#/definitions/autocall_pkg_csv.RowError'
+          $ref: '#/definitions/core_pkg_csv.RowError'
         type: array
       failed:
         type: integer
@@ -29,7 +29,7 @@ definitions:
     properties:
       data:
         items:
-          $ref: '#/definitions/autocall_internal_model.Lead'
+          $ref: '#/definitions/core_internal_model.Lead'
         type: array
     type: object
   api_controller.StatusData:
@@ -39,7 +39,7 @@ definitions:
       completed:
         type: integer
       current_lead:
-        $ref: '#/definitions/autocall_internal_model.Lead'
+        $ref: '#/definitions/core_internal_model.Lead'
       failed:
         type: integer
       interested:
@@ -54,7 +54,7 @@ definitions:
       data:
         $ref: '#/definitions/api_controller.StatusData'
     type: object
-  autocall_internal_model.Lead:
+  core_internal_model.Lead:
     properties:
       company:
         type: string
@@ -75,7 +75,7 @@ definitions:
       updatedAt:
         type: string
     type: object
-  autocall_pkg_csv.RowError:
+  core_pkg_csv.RowError:
     properties:
       message:
         type: string

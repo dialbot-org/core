@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	model "autocall/internal/model"
+	model "core/internal/model"
 )
 
 type RowError struct {
@@ -111,17 +111,17 @@ func fieldAt(record []string, index int) string {
 	return strings.TrimSpace(record[index])
 }
 
+// normalizePhone stores an Indian national number: digits only, last 10.
 func normalizePhone(value string) string {
-	value = strings.TrimSpace(value)
 	var b strings.Builder
-	for _, ch := range value {
-		if ch == '+' && b.Len() == 0 {
-			b.WriteRune(ch)
-			continue
-		}
+	for _, ch := range strings.TrimSpace(value) {
 		if ch >= '0' && ch <= '9' {
 			b.WriteRune(ch)
 		}
 	}
-	return b.String()
+	digits := b.String()
+	if len(digits) > 10 {
+		digits = digits[len(digits)-10:]
+	}
+	return digits
 }

@@ -1,8 +1,8 @@
 package controller
 
 import (
-	repository "autocall/internal/repository"
-	service "autocall/internal/service"
+	repository "core/internal/repository"
+	service "core/internal/service"
 
 	"gorm.io/gorm"
 )

@@ -19,21 +19,24 @@ func Load() (*Config, error) {
 		},
 		Database: DatabaseConfig{
 			Name:     GetEnv("DB_NAME", "autocall"),
-			Username: GetEnv("DB_USER", "postgres"),
+			Username: GetEnv("DB_USER", "visshon"),
 			Password: GetEnv("DB_PASSWORD", "password"),
 			Host:     GetEnv("DB_HOST", "localhost"),
 			Port:     GetEnv("DB_PORT", "5432"),
 			SSL:      GetEnv("DB_SSLMODE", "disable"),
 		},
 		Modem: ModemConfig{
-			Port:      GetEnv("MODEM_PORT", "/dev/ttyUSB0"),
-			BaudRate:  baud,
-			AudioFile: GetEnv("MODEM_AUDIO_PATH", `C:\message.wav`),
+			Port:             GetEnv("MODEM_PORT", "/dev/ttyUSB0"),
+			BaudRate:         baud,
+			AudioFile:        GetEnv("MODEM_AUDIO_PATH", `C:\message.amr`),
+			PlaybackDelaySec: GetEnvInt("MODEM_PLAYBACK_DELAY_SEC", 2),
+			NoAnswerRetrySec: GetEnvInt("MODEM_NO_ANSWER_RETRY_SEC", 6*3600),
 		},
 		Google: GoogleConfig{
 			CredentialsFile: GetEnv("GOOGLE_CREDENTIALS_FILE", ""),
 			SpreadsheetID:   GetEnv("GOOGLE_SPREADSHEET_ID", ""),
 			SheetName:       GetEnv("GOOGLE_SHEET_NAME", "Leads"),
+			SheetStartRow:   GetEnvInt("GOOGLE_SHEET_START_ROW", 3),
 		},
 	}, nil
 }

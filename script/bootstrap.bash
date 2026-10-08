@@ -7,7 +7,7 @@ if [ -f .env ]; then
 fi
 
 DB_NAME=${DB_NAME:-autocall}
-DB_USER=${DB_USER:-postgres}
+DB_USER=${DB_USER:-visshon}
 
 echo "Seeding database '${DB_NAME}' as user '${DB_USER}'..."
 
@@ -23,52 +23,52 @@ INSERT INTO leads (
 )
 VALUES
     (
-        'Jane Doe',
-        'Acme Inc',
-        '7017495876',
+        'Nakul Thareja',
+        'Arista',
+        '9540202263',
         'pending',
         NULL,
         false
     ),
     (
-        'Arjun Sharma',
-        'Flipkart',
-        '7017495876',
+        'Vishnu Shon',
+        'Beenverified',
+        '+917017495876',
         'pending',
         NULL,
         false
     ),
     (
-        'Olivia Brown',
-        'DesignLoop Agency',
-        '7017495876',
+        'Akshat Saini',
+        'Arista',
+        '+91 72908 64480',
         'interested',
         NULL,
         false
     ),
     (
-        'Benjamin Lee',
-        'TechInnovate',
-        '7017495876',
-        'completed',
+        'Divyam Gupta',
+        'Mathworks',
+        '+91-9872439611',
+        'pending',
         NULL,
         false
     ),
     (
-        'Rohan Verma',
-        'Razorpay',
-        '7017495876',
-        'failed',
-        'no answer',
+        'Yashwardhan Chaudhuri',
+        'Orbitron AI',
+        '9315525988',
+        'pending',
+        NULL,
         false
     ),
     (
-        'Sophia Johnson',
-        'Predictable Hiring',
-        '7017495876',
-        'interested',
+        'Shreyanshu Sharma',
+        'National Australian Bank',
+        '74045-69304',
+        'pending',
         NULL,
-        true
+        false
     )
 ON CONFLICT (phone_number) DO NOTHING;
 

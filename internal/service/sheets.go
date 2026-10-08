@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
-	repository "autocall/internal/repository"
-	sheets "autocall/pkg/sheets"
+	repository "core/internal/repository"
+	sheets "core/pkg/sheets"
 )
 
 func StartSheetsSync(repo *repository.LeadRepository, client *sheets.Client) {

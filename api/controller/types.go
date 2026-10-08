@@ -1,15 +1,15 @@
 package controller
 
 import (
-	model "autocall/internal/model"
-	csv "autocall/pkg/csv"
+	model "core/internal/model"
+	csv "core/pkg/csv"
 )
 
 type InitImportData struct {
-	RowsProcessed int           `json:"rowsProcessed"`
-	Inserted      int           `json:"inserted"`
-	Skipped       int           `json:"skipped"`
-	Failed        int           `json:"failed"`
+	RowsProcessed int            `json:"rowsProcessed"`
+	Inserted      int            `json:"inserted"`
+	Skipped       int            `json:"skipped"`
+	Failed        int            `json:"failed"`
 	Errors        []csv.RowError `json:"errors"`
 }
 

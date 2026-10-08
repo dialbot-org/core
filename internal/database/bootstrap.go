@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	config "autocall/internal/config"
-	logger "autocall/pkg/log"
+	config "core/internal/config"
+	logger "core/pkg/log"
 
 	_ "github.com/lib/pq"
 	"gorm.io/gorm"
@@ -16,7 +16,7 @@ func Init(cfg *config.DatabaseConfig) *gorm.DB {
 
 	err := Ensure(cfg)
 	logger.Fatal(err, "Failed to ensure database exists")
-	
+
 	db, err := Connect(cfg)
 	logger.Fatal(err, "Failed to connect to database")
 
@@ -30,7 +30,9 @@ func Init(cfg *config.DatabaseConfig) *gorm.DB {
 
 func Ensure(cfg *config.DatabaseConfig) error {
 	db, err := sql.Open("postgres", cfg.GetAdminDSN())
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	defer db.Close()
 	var exists bool
@@ -39,8 +41,8 @@ func Ensure(cfg *config.DatabaseConfig) error {
 		"SELECT EXISTS(SELECT 1 FROM pg_database WHERE datname = $1)",
 		cfg.Name,
 	).Scan(&exists)
-	if err != nil { 
-		return err 
+	if err != nil {
+		return err
 	}
 
 	if exists {

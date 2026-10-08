@@ -1,8 +1,8 @@
 package database
 
 import (
-	config "autocall/internal/config"
-	logger "autocall/pkg/log"
+	config "core/internal/config"
+	logger "core/pkg/log"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -15,14 +15,13 @@ func Migrate(cfg *config.DatabaseConfig) error {
 		"file://internal/migrations",
 		dsn,
 	)
-	
+
 	if err != nil {
 		logger.Fatal(err, "Cant Run Migrations")
 		return err
 	}
 
-	if	err := migration.Up(); 
-		err != nil && err != migrate.ErrNoChange {
+	if err := migration.Up(); err != nil && err != migrate.ErrNoChange {
 		logger.Fatal(err, "Cant Run Up Migrations")
 		return err
 	}
